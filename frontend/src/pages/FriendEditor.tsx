@@ -16,7 +16,7 @@ export default function FriendEditor() {
     (async () => {
       try {
         const friends = await api.fetchFriends();
-        const f = friends.find((x: any) => String(x.id) === String(id));
+        const f = friends.find((x: any) => String(x.ID) === String(id));
         if (f) {
           setTitle(f.title || "");
           setLink(f.link || "");
