@@ -1,0 +1,10 @@
+# ide
+.idea/
+.vscode/
+
+# output
+*.exe
+dist/
+
+
+node_modules/

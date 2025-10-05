@@ -1,0 +1,21 @@
+server:
+  address: ":7966"
+  jwt:
+    secret: "change-me"
+    expire_hour: 72
+
+database:
+  # driver can be: postgres, mysql, sqlite
+  driver: "sqlite"
+  # for sqlite, set path only
+  path: "easyblog.db"
+  # for postgres/mysql these are used:
+  host: "127.0.0.1"
+  port: 5432
+  user: "postgres"
+  password: "postgres"
+  dbname: "easyblog"
+  sslmode: "disable"
+  timezone: "Asia/Shanghai"
+
+
