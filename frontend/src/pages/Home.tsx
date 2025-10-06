@@ -1,4 +1,4 @@
-import { Calendar, User, Eye, ArrowUpRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -23,17 +23,6 @@ export default function Home() {
         setLoading(false);
       });
   }, []);
-
-  // const formatDate = (dateString?: string) => {
-  //   if (!dateString) return "";
-  //   const options: Intl.DateTimeFormatOptions = {
-  //     year: "numeric",
-  //     month: "long",
-  //     day: "numeric",
-  //   };
-  //   return new Date(dateString).toLocaleDateString(undefined, options);
-  // };
-
   return (
     <div className="animate-fade-in">
       {/* Header Section */}

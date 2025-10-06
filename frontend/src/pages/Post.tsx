@@ -23,6 +23,8 @@ export default function Post() {
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const [commentPreview, setCommentPreview] = useState<boolean>(false);
+
   const load = async (postId: string | undefined) => {
     if (!postId) return;
     setLoading(true);
@@ -149,7 +151,7 @@ export default function Post() {
               </div>
               <div className="flex items-center gap-1.5">
                 <Calendar size={16} />
-                <span>{formatDate(post.created_at)}</span>
+                <span>{formatDate(post.CreatedAt)}</span>
               </div>
             </div>
           </div>
@@ -194,14 +196,42 @@ export default function Post() {
           onSubmit={submitComment}
           className="transition-smooth mt-4 rounded-lg bg-gray-50 p-4 dark:bg-gray-800"
         >
-          <textarea
-            value={commentText}
-            onChange={(e) => setCommentText(e.target.value)}
-            className="transition-smooth w-full rounded-md border bg-white p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-gray-900"
-            rows={4}
-            placeholder="Add a comment..."
-            disabled={!user}
-          />
+          <div
+            className="flex w-auto gap-1 rounded-t-2xl bg-gray-950/5 p-1 dark:bg-white/10"
+            role="tablist"
+            aria-orientation="horizontal"
+          >
+            <button
+              className={`group flex items-center rounded-full px-4 text-sm/7 font-medium ${!commentPreview ? "bg-white ring" : ""} data-selected:ring-gray-950/5`}
+              id="headlessui-tabs-tab-:r4c:"
+              role="tab"
+              type="button"
+              onClick={() => setCommentPreview(false)}
+            >
+              Code
+            </button>
+            <button
+              className={`group flex items-center rounded-full px-4 text-sm/7 font-medium ${commentPreview ? "bg-white ring" : ""} data-selected:ring-gray-950/5`}
+              id="headlessui-tabs-tab-:r4e:"
+              role="tab"
+              type="button"
+              onClick={() => setCommentPreview(true)}
+            >
+              Preview
+            </button>
+          </div>
+          {!commentPreview ? (
+            <textarea
+              value={commentText}
+              onChange={(e) => setCommentText(e.target.value)}
+              className="transition-smooth w-full rounded-md border bg-white p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-gray-900"
+              rows={4}
+              placeholder="Add a comment..."
+              disabled={!user}
+            />
+          ) : (
+            <MDEditor.Markdown source={commentText !== "" ? commentText : "nothing"} />
+          )}
           {!user && (
             <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
               You need to be logged in to comment.
@@ -244,12 +274,10 @@ export default function Post() {
                     </span>
                   </div>
                   <div className="text-sm text-gray-500 dark:text-gray-400">
-                    {formatDate(c.created_at)}
+                    {formatDate(c.CreatedAt)}
                   </div>
                 </div>
-                <div className="text-gray-800 dark:text-gray-200">
-                  {c.content}
-                </div>
+                <MDEditor.Markdown source={c.content}></MDEditor.Markdown>
               </div>
             ))}
           </div>

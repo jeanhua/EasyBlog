@@ -22,7 +22,7 @@ export interface Post {
   cover_image?: string;
   author?: User;
   view_count?: number;
-  created_at?: string;
+  CreatedAt?: string;
   categories?: Category[];
   tags?: Tag[];
 }
@@ -32,5 +32,5 @@ export interface Comment {
   post_id: number;
   user_id?: number;
   content: string;
-  created_at?: string;
+  CreatedAt?: string;
 }
