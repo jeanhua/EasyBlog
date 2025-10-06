@@ -54,10 +54,6 @@ export default function EditPost() {
 
   // Update last activity time
   useEffect(() => {
-    // const handleContentChange = () => {
-    //   lastActivityTimeRef.current = new Date();
-    // };
-
     const interval = setInterval(() => {
       const now = new Date();
       const diffInMinutes =
@@ -203,7 +199,7 @@ export default function EditPost() {
         <div className="overflow-hidden rounded-xl bg-white shadow-lg transition-all duration-300 hover:shadow-xl dark:bg-gray-800">
           {/* Card Header */}
           <div className="dark:to-gray-850 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white p-6 sm:p-8 dark:border-gray-700 dark:from-gray-800">
-            <h1 className="animate-fade-in-up from-grey-600 dark:from-grey-400 mb-2 bg-gradient-to-r via-blue-500 to-teal-400 bg-clip-text text-3xl font-bold text-transparent dark:via-blue-400 dark:to-teal-300">
+            <h1 className="animate-fade-in-up mb-2 bg-clip-text text-3xl font-bold">
               Edit Post
             </h1>
             <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">

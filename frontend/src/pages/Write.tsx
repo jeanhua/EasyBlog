@@ -5,7 +5,6 @@ import {
   BookOpen,
   Calendar,
   Clock,
-  List,
   PenTool,
   Save,
   Tag,
@@ -26,37 +25,12 @@ export default function Write() {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [toc, setToc] = useState<{ id: string; text: string; level: number }[]>(
-    [],
-  );
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-  const [activeTocItem, setActiveTocItem] = useState<string | null>(null);
   const nav = useNavigate();
   const editorRef = useRef<HTMLDivElement>(null);
   const lastActivityTimeRef = useRef<Date>(new Date());
 
-  // Generate table of contents from markdown content
-  useEffect(() => {
-    const headers = content.match(/#{1,6}\s+(.+)/g);
-    if (headers) {
-      const newToc = headers.map((header, index) => {
-        const level = header.match(/^#{1,6}/)?.[0].length || 1;
-        const text = header.replace(/^#{1,6}\s+/, "").trim();
-        const id = `heading-${index}`;
-        return { id, text, level };
-      });
-      setToc(newToc);
-    } else {
-      setToc([]);
-    }
-  }, [content]);
-
   // Update last activity time
   useEffect(() => {
-    // const handleContentChange = () => {
-    //   lastActivityTimeRef.current = new Date();
-    // };
-
     const interval = setInterval(() => {
       const now = new Date();
       const diffInMinutes =
@@ -76,28 +50,6 @@ export default function Write() {
 
     return () => clearInterval(interval);
   }, [title, content, summary, categories, tags]);
-
-  // Track active TOC item based on scroll position
-  useEffect(() => {
-    const handleScroll = () => {
-      if (editorRef.current && toc.length > 0) {
-        const scrollPosition = window.scrollY + 100;
-
-        // Find the current heading
-        for (let i = toc.length - 1; i >= 0; i--) {
-          const element = document.getElementById(toc[i].id);
-          if (element && element.offsetTop <= scrollPosition) {
-            setActiveTocItem(toc[i].id);
-            break;
-          }
-        }
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [toc]);
-
   useEffect(() => {
     setLoading(true);
     Promise.all([api.fetchCategories(), api.fetchTags()])
@@ -181,7 +133,7 @@ export default function Write() {
         <div className="overflow-hidden rounded-xl bg-white shadow-lg transition-all duration-300 hover:shadow-xl dark:bg-gray-800">
           {/* Card Header */}
           <div className="dark:to-gray-850 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white p-6 sm:p-8 dark:border-gray-700 dark:from-gray-800">
-            <h1 className="animate-fade-in-up from-grey-600 dark:from-grey-400 mb-2 bg-gradient-to-r via-blue-500 to-teal-400 bg-clip-text text-3xl font-bold text-transparent dark:via-blue-400 dark:to-teal-300">
+            <h1 className="mb-2 bg-gradient-to-r bg-clip-text text-3xl font-bold">
               Write a New Post
             </h1>
             <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
@@ -279,76 +231,10 @@ export default function Write() {
               </div>
 
               <div className="flex flex-col gap-6 lg:flex-row">
-                {/* Table of Contents */}
-                {toc.length > 0 && (
-                  <div
-                    className={`flex-shrink-0 transition-all duration-300 lg:w-64 xl:w-72 ${isSidebarCollapsed ? "opacity-0 lg:w-0" : ""}`}
-                  >
-                    <div className="animate-fade-in sticky top-8 rounded-xl border border-gray-200 bg-white p-4 shadow-md dark:border-gray-700 dark:bg-gray-800">
-                      <div className="mb-4 flex items-center justify-between gap-2 text-sm font-semibold text-gray-800 dark:text-gray-200">
-                        <div className="flex items-center gap-2">
-                          <List
-                            size={16}
-                            className="text-grey-600 dark:text-grey-400"
-                          />
-                          <span>Table of Contents</span>
-                        </div>
-                        <button
-                          onClick={() =>
-                            setIsSidebarCollapsed(!isSidebarCollapsed)
-                          }
-                          className="rounded-full p-1 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-700 dark:hover:text-gray-300"
-                          aria-label={
-                            isSidebarCollapsed
-                              ? "Expand sidebar"
-                              : "Collapse sidebar"
-                          }
-                        >
-                          {isSidebarCollapsed ? (
-                            <List
-                              size={16}
-                              className="text-grey-500 dark:text-grey-400"
-                            />
-                          ) : (
-                            <ArrowLeft
-                              size={16}
-                              className="text-grey-500 dark:text-grey-400"
-                            />
-                          )}
-                        </button>
-                      </div>
-                      <nav className="scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-700 max-h-[60vh] space-y-1 overflow-y-auto pr-2 text-sm">
-                        {toc.map((item) => (
-                          <a
-                            key={item.id}
-                            href={`#${item.id}`}
-                            className={`block rounded-md px-2 py-1.5 transition-all duration-200 ${activeTocItem === item.id ? "bg-grey-100 text-grey-700 dark:bg-grey-900/30 dark:text-grey-300 font-medium" : "text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700"}`}
-                            style={{
-                              paddingLeft: `${(item.level - 1) * 12}px`,
-                            }}
-                            onClick={(e) => {
-                              e.preventDefault();
-                              const element = document.getElementById(item.id);
-                              if (element) {
-                                element.scrollIntoView({
-                                  behavior: "smooth",
-                                  block: "start",
-                                });
-                              }
-                            }}
-                          >
-                            {item.text}
-                          </a>
-                        ))}
-                      </nav>
-                    </div>
-                  </div>
-                )}
-
                 {/* Editor */}
                 <div
                   ref={editorRef}
-                  className={`flex-1 transition-all duration-300 ${isSidebarCollapsed ? "" : "lg:ml-0"}`}
+                  className={`flex-1 transition-all duration-300`}
                 >
                   <div className="w-full overflow-hidden rounded-xl border border-gray-300 shadow-sm transition-all duration-200 hover:shadow-md dark:border-gray-700">
                     <div className="flex items-center gap-1.5 border-b border-gray-300 bg-gray-50 px-4 py-3 dark:border-gray-700 dark:bg-gray-900">
@@ -489,7 +375,7 @@ export default function Write() {
               <div className="flex-1">
                 <button
                   type="submit"
-                  className="from-grey-600 hover:from-grey-700 focus:ring-grey-500 flex w-full transform items-center justify-center gap-2 rounded-lg border border-transparent bg-gradient-to-r to-blue-600 px-6 py-3 text-base font-medium text-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:to-blue-700 focus:ring-2 focus:ring-offset-2 focus:outline-none active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:-translate-y-0"
+                  className="focus:ring-grey-500 flex w-full transform items-center justify-center gap-2 rounded-lg border border-solid px-6 py-3 text-base font-medium shadow-sm transition-all duration-300 hover:-translate-y-0.5 focus:ring-2 focus:ring-offset-2 focus:outline-none active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:-translate-y-0"
                   disabled={saving || loading}
                 >
                   {saving ? (

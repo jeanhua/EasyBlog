@@ -48,9 +48,7 @@ export default function Login() {
         <div className="overflow-hidden rounded-xl bg-white shadow-lg dark:bg-gray-800">
           <div className="p-6 sm:p-8">
             <div className="mb-8 text-center">
-              <h1 className="bg-gradient-to-r from-blue-700 to-violet-700 bg-clip-text text-3xl font-bold text-transparent dark:from-blue-400 dark:to-violet-400">
-                Welcome Back
-              </h1>
+              <h1 className="bg-clip-text text-3xl font-bold">Welcome Back</h1>
               <p className="mt-2 text-gray-600 dark:text-gray-400">
                 Log in to continue to EasyBlog
               </p>
