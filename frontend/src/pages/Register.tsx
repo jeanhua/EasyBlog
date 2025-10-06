@@ -1,9 +1,17 @@
+import {
+  User,
+  Mail,
+  Lock,
+  AlertCircle,
+  CheckCircle,
+  ArrowRight,
+} from "lucide-react";
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { User, Mail, Lock, AlertCircle, CheckCircle, ArrowRight } from "lucide-react";
 
-import { useAuth } from "../context/AuthContext";
-import { useSiteConfig } from "../context/SiteConfigContext";
+import { useAuth } from "@/context/AuthContext";
+import { useSiteConfig } from "@/context/SiteConfigContext";
+
 import api from "../lib/api";
 
 export default function Register() {
@@ -20,7 +28,7 @@ export default function Register() {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
-    
+
     function validate() {
       if (!username || username.length < 3)
         return "Username must be at least 3 characters";
@@ -32,13 +40,13 @@ export default function Register() {
 
       return null;
     }
-    
+
     const validationError = validate();
     if (validationError) {
       setError(validationError);
       return;
     }
-    
+
     setLoading(true);
     try {
       const pwHash = await api.sha256Hex(password);
@@ -54,38 +62,40 @@ export default function Register() {
   }
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 animate-fade-in">
+    <div className="animate-fade-in flex min-h-[80vh] items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
       <div className="w-full max-w-md">
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
+        <div className="overflow-hidden rounded-xl bg-white shadow-lg dark:bg-gray-800">
           <div className="p-6 sm:p-8">
-            <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-teal-600 dark:from-green-400 dark:to-teal-400">
+            <div className="mb-8 text-center">
+              <h1 className="bg-gradient-to-r from-green-600 to-teal-600 bg-clip-text text-3xl font-bold text-transparent dark:from-green-400 dark:to-teal-400">
                 Create Account
               </h1>
               <p className="mt-2 text-gray-600 dark:text-gray-400">
                 Join EasyBlog to start sharing your thoughts
               </p>
             </div>
-            
-            {enabled === false ? (
-              <div className="mb-6 rounded-lg bg-amber-50 dark:bg-amber-900/20 p-4 animate-fade-in">
+
+            {!enabled ? (
+              <div className="animate-fade-in mb-6 rounded-lg bg-amber-50 p-4 dark:bg-amber-900/20">
                 <div className="flex">
-                  <AlertCircle className="h-5 w-5 text-amber-500 flex-shrink-0" />
+                  <AlertCircle className="h-5 w-5 flex-shrink-0 text-amber-500" />
                   <div className="ml-3">
                     <p className="text-sm font-medium text-amber-800 dark:text-amber-300">
                       Registration Disabled
                     </p>
                     <p className="mt-1 text-sm text-amber-700 dark:text-amber-400">
-                      Registration is currently disabled by the site administrator. Please contact the site owner if you need an account.
+                      Registration is currently disabled by the site
+                      administrator. Please contact the site owner if you need
+                      an account.
                     </p>
                   </div>
                 </div>
               </div>
             ) : null}
-            
+
             <form onSubmit={onSubmit} className="space-y-4">
               {error && (
-                <div className="rounded-md bg-red-50 dark:bg-red-900/20 p-4 animate-fade-in">
+                <div className="animate-fade-in rounded-md bg-red-50 p-4 dark:bg-red-900/20">
                   <div className="flex">
                     <AlertCircle className="h-5 w-5 text-red-500" />
                     <div className="ml-3">
@@ -96,16 +106,16 @@ export default function Register() {
                   </div>
                 </div>
               )}
-              
+
               <div>
-                <label 
-                  htmlFor="username" 
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                <label
+                  htmlFor="username"
+                  className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300"
                 >
                   Username
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                     <User className="h-5 w-5 text-gray-400" />
                   </div>
                   <input
@@ -115,27 +125,27 @@ export default function Register() {
                     required
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-700 rounded-lg shadow-sm bg-gray-50 dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 transition-smooth"
+                    className="transition-smooth block w-full rounded-lg border border-gray-300 bg-gray-50 py-3 pr-3 pl-10 shadow-sm focus:ring-2 focus:ring-green-500 focus:outline-none dark:border-gray-700 dark:bg-gray-900"
                     placeholder="Choose a username"
                     disabled={!enabled}
                   />
                   {username.length >= 3 && (
-                    <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
                       <CheckCircle className="h-5 w-5 text-green-500" />
                     </div>
                   )}
                 </div>
               </div>
-              
+
               <div>
-                <label 
-                  htmlFor="email" 
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                <label
+                  htmlFor="email"
+                  className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300"
                 >
                   Email address
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                     <Mail className="h-5 w-5 text-gray-400" />
                   </div>
                   <input
@@ -145,22 +155,22 @@ export default function Register() {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-700 rounded-lg shadow-sm bg-gray-50 dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 transition-smooth"
+                    className="transition-smooth block w-full rounded-lg border border-gray-300 bg-gray-50 py-3 pr-3 pl-10 shadow-sm focus:ring-2 focus:ring-green-500 focus:outline-none dark:border-gray-700 dark:bg-gray-900"
                     placeholder="you@example.com"
                     disabled={!enabled}
                   />
                 </div>
               </div>
-              
+
               <div>
-                <label 
-                  htmlFor="password" 
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                <label
+                  htmlFor="password"
+                  className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300"
                 >
                   Password
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                     <Lock className="h-5 w-5 text-gray-400" />
                   </div>
                   <input
@@ -170,12 +180,12 @@ export default function Register() {
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-700 rounded-lg shadow-sm bg-gray-50 dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 transition-smooth"
+                    className="transition-smooth block w-full rounded-lg border border-gray-300 bg-gray-50 py-3 pr-3 pl-10 shadow-sm focus:ring-2 focus:ring-green-500 focus:outline-none dark:border-gray-700 dark:bg-gray-900"
                     placeholder="••••••••"
                     disabled={!enabled}
                   />
                   {password.length >= 8 && (
-                    <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
                       <CheckCircle className="h-5 w-5 text-green-500" />
                     </div>
                   )}
@@ -184,11 +194,11 @@ export default function Register() {
                   Password must be at least 8 characters long
                 </p>
               </div>
-              
+
               <div className="pt-2">
                 <button
                   type="submit"
-                  className="w-full flex justify-center items-center gap-2 px-4 py-3 border border-transparent text-base font-medium rounded-lg shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-smooth disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="transition-smooth flex w-full items-center justify-center gap-2 rounded-lg border border-transparent bg-green-600 px-4 py-3 text-base font-medium text-white shadow-sm hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                   disabled={!enabled || loading}
                 >
                   {loading ? (
@@ -202,13 +212,13 @@ export default function Register() {
                 </button>
               </div>
             </form>
-            
+
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-600 dark:text-gray-400">
                 Already have an account?
-                <Link 
-                  to="/login" 
-                  className="ml-1 font-medium text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 transition-smooth"
+                <Link
+                  to="/login"
+                  className="transition-smooth ml-1 font-medium text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300"
                 >
                   Log in
                 </Link>

@@ -1,13 +1,19 @@
-import React, { useEffect, useState } from "react";
-import ReactMarkdown from "react-markdown";
-import { useNavigate, useParams, Link } from "react-router-dom";
-import remarkGfm from "remark-gfm";
-import { Calendar, User, Edit2, Trash2, MessageSquare, Send } from "lucide-react";
-
-import { useAuth } from "../context/AuthContext";
-import api from "../lib/api";
-import type { Post as TPost, Comment } from "../types";
 import MDEditor from "@uiw/react-md-editor";
+import {
+  Calendar,
+  Edit2,
+  MessageSquare,
+  Send,
+  Trash2,
+  User,
+} from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+
+import { useAuth } from "@/context/AuthContext";
+
+import api from "../lib/api";
+import type { Comment, Post as TPost } from "../types";
 
 export default function Post() {
   const { id } = useParams();
@@ -36,7 +42,11 @@ export default function Post() {
 
   const formatDate = (dateString?: string) => {
     if (!dateString) return "";
-    const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+    const options: Intl.DateTimeFormatOptions = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
@@ -47,7 +57,7 @@ export default function Post() {
   async function submitComment(e: React.FormEvent) {
     e.preventDefault();
     if (!id || !commentText || isSubmitting) return;
-    
+
     setIsSubmitting(true);
     try {
       await api.postComment(id, commentText);
@@ -67,32 +77,42 @@ export default function Post() {
   if (loading) {
     return (
       <div className="animate-fade-in space-y-6 py-12">
-        <div className="h-12 bg-gray-200 dark:bg-gray-700 rounded-md animate-pulse-soft" style={{ width: '60%' }}></div>
-        <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded-md animate-pulse-soft" style={{ width: '30%' }}></div>
+        <div
+          className="animate-pulse-soft h-12 rounded-md bg-gray-200 dark:bg-gray-700"
+          style={{ width: "60%" }}
+        ></div>
+        <div
+          className="animate-pulse-soft h-6 rounded-md bg-gray-200 dark:bg-gray-700"
+          style={{ width: "30%" }}
+        ></div>
         <div className="space-y-4">
-          {[1, 2, 3].map(i => (
-            <div key={i} className="h-4 bg-gray-200 dark:bg-gray-700 rounded-md animate-pulse-soft" style={{ width: `${80 + i * 5}%` }}></div>
+          {[1, 2, 3].map((i) => (
+            <div
+              key={i}
+              className="animate-pulse-soft h-4 rounded-md bg-gray-200 dark:bg-gray-700"
+              style={{ width: `${80 + i * 5}%` }}
+            ></div>
           ))}
         </div>
       </div>
     );
   }
-  
+
   if (!post) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 text-center animate-fade-in">
+      <div className="animate-fade-in flex flex-col items-center justify-center py-20 text-center">
         <div className="mb-4 text-gray-400 dark:text-gray-600">
           <MessageSquare size={48} />
         </div>
         <h3 className="mb-2 text-xl font-semibold text-gray-900 dark:text-gray-100">
           Post not found
         </h3>
-        <p className="max-w-md text-gray-600 dark:text-gray-400 mb-6">
+        <p className="mb-6 max-w-md text-gray-600 dark:text-gray-400">
           The post you're looking for doesn't exist or has been removed.
         </p>
-        <Link 
-          to="/" 
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-smooth"
+        <Link
+          to="/"
+          className="transition-smooth rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
         >
           Back to Home
         </Link>
@@ -117,9 +137,9 @@ export default function Post() {
     <article className="animate-fade-in space-y-6">
       {/* Post Header */}
       <div className="border-b pb-6">
-        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+        <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold bg-clip-text mb-3">
+            <h1 className="mb-3 bg-clip-text text-3xl font-bold md:text-4xl">
               {post.title}
             </h1>
             <div className="flex flex-wrap items-center gap-4 text-gray-600 dark:text-gray-400">
@@ -133,12 +153,12 @@ export default function Post() {
               </div>
             </div>
           </div>
-          
+
           <div className="flex gap-2">
             {canEdit && (
               <Link
                 to={`/posts/${post.ID}/edit`}
-                className="rounded border px-3 py-1.5 flex items-center gap-1.5 transition-smooth hover:bg-gray-100 dark:hover:bg-gray-800"
+                className="transition-smooth flex items-center gap-1.5 rounded border px-3 py-1.5 hover:bg-gray-100 dark:hover:bg-gray-800"
               >
                 <Edit2 size={16} />
                 <span>Edit</span>
@@ -147,7 +167,7 @@ export default function Post() {
             {canEdit && (
               <button
                 onClick={onDelete}
-                className="rounded border border-red-600 bg-red-600 px-3 py-1.5 text-white flex items-center gap-1.5 transition-smooth hover:bg-red-700"
+                className="transition-smooth flex items-center gap-1.5 rounded border border-red-600 bg-red-600 px-3 py-1.5 text-white hover:bg-red-700"
               >
                 <Trash2 size={16} />
                 <span>Delete</span>
@@ -158,23 +178,26 @@ export default function Post() {
       </div>
 
       {/* Post Content */}
-      <div className="prose dark:prose-invert max-w-none transition-smooth">
+      <div className="prose dark:prose-invert transition-smooth max-w-none">
         <MDEditor.Markdown source={post.content || ""} />
       </div>
 
       {/* Comments Section */}
       <section className="mt-8 border-t pt-8">
-        <h2 className="text-xl font-semibold flex items-center gap-2">
+        <h2 className="flex items-center gap-2 text-xl font-semibold">
           <MessageSquare size={20} />
           Comments ({comments.length})
         </h2>
-        
+
         {/* Comment Form */}
-        <form onSubmit={submitComment} className="mt-4 bg-gray-50 dark:bg-gray-800 p-4 rounded-lg transition-smooth">
+        <form
+          onSubmit={submitComment}
+          className="transition-smooth mt-4 rounded-lg bg-gray-50 p-4 dark:bg-gray-800"
+        >
           <textarea
             value={commentText}
             onChange={(e) => setCommentText(e.target.value)}
-            className="w-full border p-3 rounded-md bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-smooth"
+            className="transition-smooth w-full rounded-md border bg-white p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-gray-900"
             rows={4}
             placeholder="Add a comment..."
             disabled={!user}
@@ -185,9 +208,9 @@ export default function Post() {
             </p>
           )}
           <div className="mt-3 flex justify-end">
-            <button 
-              type="submit" 
-              className="rounded bg-blue-600 px-4 py-2 text-white flex items-center gap-1.5 transition-smooth hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            <button
+              type="submit"
+              className="transition-smooth flex items-center gap-1.5 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
               disabled={!user || !commentText || isSubmitting}
             >
               {isSubmitting ? (
@@ -201,22 +224,24 @@ export default function Post() {
             </button>
           </div>
         </form>
-        
+
         {/* Comments List */}
         {comments.length > 0 ? (
           <div className="mt-6 space-y-4">
             {comments.map((c, index) => (
-              <div 
-                key={c.ID} 
-                className="rounded-lg border p-4 transition-smooth animate-fade-in"
+              <div
+                key={c.ID}
+                className="transition-smooth animate-fade-in rounded-lg border p-4"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
-                <div className="flex items-center justify-between mb-2">
+                <div className="mb-2 flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <div className="h-8 w-8 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-sm">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-200 text-sm dark:bg-gray-700">
                       {c.author?.username?.charAt(0).toUpperCase() || "?"}
                     </div>
-                    <span className="font-medium">{c.author?.username || "unknown"}</span>
+                    <span className="font-medium">
+                      {c.author?.username || "unknown"}
+                    </span>
                   </div>
                   <div className="text-sm text-gray-500 dark:text-gray-400">
                     {formatDate(c.created_at)}
@@ -229,7 +254,7 @@ export default function Post() {
             ))}
           </div>
         ) : (
-          <div className="mt-6 text-center py-8">
+          <div className="mt-6 py-8 text-center">
             <p className="text-gray-500 dark:text-gray-400">
               No comments yet. Be the first to comment!
             </p>

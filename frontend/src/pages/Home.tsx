@@ -1,6 +1,6 @@
+import { Calendar, User, Eye, ArrowUpRight } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Calendar, User, Eye, ArrowUpRight } from "lucide-react";
 
 import api from "../lib/api";
 import type { Post } from "../types";
@@ -24,11 +24,15 @@ export default function Home() {
       });
   }, []);
 
-  const formatDate = (dateString?: string) => {
-    if (!dateString) return "";
-    const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString(undefined, options);
-  };
+  // const formatDate = (dateString?: string) => {
+  //   if (!dateString) return "";
+  //   const options: Intl.DateTimeFormatOptions = {
+  //     year: "numeric",
+  //     month: "long",
+  //     day: "numeric",
+  //   };
+  //   return new Date(dateString).toLocaleDateString(undefined, options);
+  // };
 
   return (
     <div className="animate-fade-in">
@@ -36,7 +40,7 @@ export default function Home() {
       <div className="mb-8">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold bg-clip-text">
+            <h1 className="bg-clip-text text-3xl font-bold md:text-4xl">
               Latest Posts
             </h1>
             <p className="mt-2 text-gray-600 dark:text-gray-400">
@@ -93,7 +97,7 @@ export default function Home() {
           </div>
         )}
       </div>
-      
+
       <div className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
         Total posts: {total}
       </div>
